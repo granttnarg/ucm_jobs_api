@@ -28,7 +28,11 @@ RSpec.describe 'API V1 Registration', type: :request do
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['message']).to eq('user created')
+          decoded_token = JwtService.decode(data['token'])
+
+          expect(data['user']['email']).to eq('test@example.com')
+          expect(data['user']).not_to have_key('password_digest')
+          expect(decoded_token).to have_key(:user_id)
         end
       end
 
@@ -37,6 +41,7 @@ RSpec.describe 'API V1 Registration', type: :request do
 
         run_test! do |response|
           data = JSON.parse(response.body)
+
           expect(data).to have_key('errors')
           expect(data['errors']).to be_an(Array)
         end

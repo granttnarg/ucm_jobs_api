@@ -8,5 +8,5 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-password = ENV['ADMIN_SEED_PASSWORD'] || 'securepassword'
+password = ENV.fetch('ADMIN_SEED_PASSWORD', 'securepassword')
 User.create(admin: true, email: 'test@example', password:, password_confirmation: password)

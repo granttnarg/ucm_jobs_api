@@ -3,7 +3,8 @@ class Api::V1::RegistrationController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      render json: { message: "user created" }, status: :created
+      token = JwtService.encode({ user_id: @user.id })
+      render json: { user: @user.as_json(except: :password_digest), token: token }, status: :created
     else
       render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
     end
