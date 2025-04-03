@@ -1,0 +1,46 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/registration":
+    post:
+      summary: Creates a user
+      tags:
+      - Registration
+      parameters: []
+      responses:
+        '201':
+          description: user created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: user@example.com
+                    password:
+                      type: string
+                      example: password123
+                    password_confirmation:
+                      type: string
+                      example: password123
+                  required:
+                  - email
+                  - password
+                  - password_confirmation
+              required:
+              - user
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com

@@ -7,3 +7,6 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+password = ENV['ADMIN_SEED_PASSWORD'] || 'securepassword'
+User.create(admin: true, email: 'test@example', password:, password_confirmation: password)
