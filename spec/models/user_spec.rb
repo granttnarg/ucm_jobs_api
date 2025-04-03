@@ -24,5 +24,10 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
       expect(user.errors[:password]).to include("can't be blank")
     end
+
+    it "it defaults to admin false" do
+      user = create(:user)
+      expect(user.admin?).to eq(false)
+    end
   end
 end
