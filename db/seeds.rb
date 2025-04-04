@@ -7,6 +7,22 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+Job.destroy_all
+User.destroy_all
+Company.destroy_all
+
+puts "All DB data destroyed"
 
 password = ENV.fetch('ADMIN_SEED_PASSWORD', 'securepassword')
-User.create(admin: true, email: 'test@example', password:, password_confirmation: password)
+admin = User.create!(admin: true, email: 'test@example', password:, password_confirmation: password)
+applicant_user = User.create!(admin: false, email: 'hello@example', password:, password_confirmation: password)
+
+company = Company.create!(name: "Big Tech")
+
+admin.company = company
+admin.save
+
+Job.create!(title: "Senior Dev", hourly_salary: 50, company:, user_id: admin.id)
+Job.create!(title: "Jnr Dev", hourly_salary: 1, company:, user_id: admin.id)
+
+puts "Seeds Created"
