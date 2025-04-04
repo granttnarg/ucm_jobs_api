@@ -26,10 +26,11 @@ Things you may want to cover:
 
 # Models:
 
+<!--
 # User (job applicant)
 
 - unique email
-- password
+- password -->
 
 # Admin User
 

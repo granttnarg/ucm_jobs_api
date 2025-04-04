@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :job do
-    title { "MyString" }
-    hourly_salary { "9.99" }
+    title { "Job_title_#{rand(1000)}" }
+    hourly_salary { 9.90 }
     association :company
-    association :creator, factory: :admin_user
+    creator { association :user, admin: true, company: company }
   end
 end

@@ -31,7 +31,40 @@ RSpec.configure do |config|
             }
           }
         }
-      ]
+      ],
+      components: {
+        schemas: {
+          job: {
+            type: :object,
+            properties: {
+              id: { type: :integer },
+              title: { type: :string },
+              hourly_salary: { type: [ :number, :string ], format: :float },
+              created_at: { type: :string, format: :datetime },
+              updated_at: { type: :string, format: :datetime }
+            },
+            required: [ :id, :title, :hourly_salary ]
+          },
+
+          error: {
+            type: :object,
+            properties: {
+              errors: {
+                type: :array,
+                items: { type: :string }
+              }
+            },
+            required: [ :errors ]
+          }
+        },
+        securitySchemes: {
+          bearer_auth: {
+            type: :http,
+            scheme: :bearer,
+            bearerFormat: 'JWT'
+          }
+        }
+      }
     }
   }
 
