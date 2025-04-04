@@ -15,6 +15,12 @@ Rails.application.routes.draw do
       post "signup", to: "registration#create"
       post "login", to: "authentication#create"
       post "refresh", to: "authentication#refresh"
+
+      resources :jobs, only: [ :index, :show ]
+
+      namespace :admin do
+        resources :jobs, only: [ :index, :show, :create ]
+      end
     end
   end
 end
