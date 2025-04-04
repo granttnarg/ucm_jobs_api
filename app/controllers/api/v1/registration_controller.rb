@@ -1,5 +1,6 @@
-class Api::V1::RegistrationController < ApplicationController
-  def create
+class Api::V1::RegistrationController < Api::V1::BaseController
+  skip_before_action :authenticate_user
+  def create # signup
     @user = User.new(user_params)
 
     if @user.save

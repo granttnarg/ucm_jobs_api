@@ -1,4 +1,5 @@
-class Api::V1::AuthenticationController < ApplicationController
+class Api::V1::AuthenticationController < Api::V1::BaseController
+  skip_before_action :authenticate_user
   def create
     @user = User.find_by(email: params[:email])
 
