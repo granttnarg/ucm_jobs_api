@@ -17,7 +17,7 @@ class Api::V1::Admin::JobsController < Api::V1::BaseController
 
     if result.success?
       @job = result.job
-      render "api/v1/jobs/show", locals: { job: @job }, formats: [ :json ], status: :created
+      render "api/v1/admin/jobs/show", locals: { job: @job }, formats: [ :json ], status: :created
     else
       render json: { errors: result.errors }, status: :unprocessable_entity
     end
@@ -26,6 +26,6 @@ class Api::V1::Admin::JobsController < Api::V1::BaseController
   private
 
   def job_params
-    params.require(:job).permit(:title, :hourly_salary, language_codes: [])
+    params.require(:job).permit(:title, :hourly_salary, language_codes: [], shifts: [ :start_time, :end_time ])
   end
 end

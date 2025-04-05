@@ -11,7 +11,8 @@ RSpec.describe Jobs::Creator do
     {
       title: 'Software Engineer',
       hourly_salary: 20,
-      language_codes: [ english.code, german.code ]
+      language_codes: [ english.code, german.code ],
+      shifts: [ { start_time: Time.zone.now + 1.hour, end_time: Time.zone.now + 2.hours } ]
     }
   end
 

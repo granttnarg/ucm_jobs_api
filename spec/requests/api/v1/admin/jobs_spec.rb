@@ -13,13 +13,17 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
 
       response '200', 'Jobs retrieved successfully' do
         schema '$ref' => '#/components/schemas/jobs_response'
-
+        let!(:job) { create(:job, creator: admin_user, company: admin_user.company) }
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
         let(:Accept) { 'application/json' }
 
         run_test! do |response|
           parsed_response = JSON.parse(response.body)
+          job = parsed_response['jobs'].first
           expect(parsed_response['jobs'].length).to eq(admin_user.company.jobs.count)
+          expect(parsed_response['meta']["total_count"]).to be(1)
+          expect(job['shifts_count']).to be(1)
+          expect(job['spoken_languages']).to be_present
         end
       end
 
@@ -64,11 +68,15 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
         schema '$ref' => '#/components/schemas/job_response'
 
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
-        let(:job) { { job: { title: 'Software Engineer', hourly_salary: 35.50, language_codes: [ 'en' ] } } }
+        let!(:shift_params) { [ { start_time: Time.zone.now + 10.days, end_time: Time.zone.now + 11.days } ] }
+        let(:job) { { job: { title: 'Software Engineer', hourly_salary: 35.50, language_codes: [ 'en' ], shifts: shift_params } } }
 
         run_test! do |response|
           parsed_response = JSON.parse(response.body)
           expect(parsed_response['job']['title']).to eq('Software Engineer')
+          expect(parsed_response['spoken_languages']).to be_present
+          expect(parsed_response['shifts']).to be_present
+          expect(parsed_response['shifts'].first['start_time']).to be_present
         end
       end
 
