@@ -1,75 +1,41 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Ruby version
 
-Things you may want to cover:
+- 3.2.0
 
-- Ruby version
-  3.2.0
+## Rails version
 
-- System dependencies
+- 8.x.x
 
-- Configuration
+## System dependencies
 
-- Database creation
+- PostgreSQL (for `pg_trgm` extension)
+- Redis (optional for background jobs with Sidekiq)
 
-- Database initialization
+## Configuration
 
-- How to run the test suite
+1. Clone the repository:
+   `git clone https://github.com/your-username/ucm_jobs_api.git`
+   `cd ucm_jobs_api`
 
-- Services (job queues, cache servers, search engines, etc.)
+2. Install dependencies
+   `bundle install`
 
-- Deployment instructions
+3. Database Creation
+   `rails db:create`
 
-- TODOS:
+4. Database Intialization
+   `rails db:migrate db:seed`
 
-# Models:
+5. To Run test suite
+   `bundle exec rspec`
 
-<!--
-# User (job applicant)
+6. Swagger file generation
+   `rails rswag:specs:swaggerize`
+   This will recreate swagger.yaml for documentation
 
-- unique email
-- password -->
+Rswag for Swagger-based API documentation (/api-docs)
 
-<!-- # Admin User
-
-- we could perhaps the concept of admin user to make the job listing -->
-
-# Job (Listing) - connected to Admin User.
-
-<!-- - title
-- hourly salary -->
-
-<!-- - spoken language -> give room to expand this via gem or dedicated model -->
-
-- shift dates
-
-display on a job:
-
-<!-- - Title, -->
-
-Total earnings
-
-<!-- Spoken Languages -->
-
-# Job Application - connected to job and users
-
-# Shift - connected to job
-
-- date
-- job_id
-
-## SEARCH functionality:
-
-- On jobs by title and spoken language.
-
-# an Admin User has many Jobs
-
-# a user has many jobs_applications
-
-# a job has many job_applications
-
-# a job has many shifts
-
-# languages. There is nothing mentioned about expanding languages.
+7. Deployment Instructions
+   ??
