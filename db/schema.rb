@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_05_151658) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_05_220926) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pg_trgm"
 
   create_table "companies", force: :cascade do |t|
     t.string "name"
@@ -38,6 +39,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_05_151658) do
     t.bigint "company_id", null: false
     t.bigint "user_id"
     t.index ["company_id"], name: "index_jobs_on_company_id"
+    t.index ["title"], name: "index_jobs_on_title", opclass: :gin_trgm_ops, using: :gin
     t.index ["user_id"], name: "index_jobs_on_user_id"
   end
 
@@ -56,6 +58,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_05_151658) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_languages_on_code"
   end
 
   create_table "shifts", force: :cascade do |t|

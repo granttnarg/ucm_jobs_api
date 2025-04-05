@@ -17,6 +17,10 @@ Rails.application.routes.draw do
       post "refresh", to: "authentication#refresh"
 
       resources :jobs, only: [ :index, :show ] do
+        collection do
+          get :search
+        end
+
         resources :job_applications, only: [ :create ]
       end
       resources :languages, only: [ :index ]
