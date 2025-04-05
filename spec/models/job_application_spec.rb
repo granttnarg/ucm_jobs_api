@@ -3,9 +3,10 @@ require 'rails_helper'
 
 RSpec.describe JobApplication, type: :model do
   let(:company) { create(:company) }
-  let(:user) { create(:user, admin: true, company:) }
+  let(:admin_user) { create(:user, admin: true, company:) }
+  let(:user) { create(:user, admin: false) }
 
-  let(:job) { create(:job, company: company, creator: user) }
+  let(:job) { create(:job, company: company, creator: admin_user) }
 
   context 'factory' do
     it "has a valid factory" do
