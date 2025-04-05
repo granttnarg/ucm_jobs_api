@@ -7,11 +7,11 @@ class Api::V1::JobsController < Api::V1::BaseController
   end
 
   def index
-    @jobs = Job.includes(:languages).order(created_at: :desc).limit(10)
+    @jobs = Job.includes(:languages, :shifts).order(created_at: :desc).limit(10)
   end
 
   def show
-    @job = Job.find(params[:id])
+    @job = Job.includes(:languages, :shifts).find(params[:id])
   end
 
   def search

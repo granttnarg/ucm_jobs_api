@@ -1,11 +1,11 @@
 class Api::V1::Admin::JobsController < Api::V1::BaseController
   before_action :require_admin
   def index
-    @jobs = current_user.company.jobs
+    @jobs = current_user.company.jobs.includes(:languages).includes(:shifts).order(created_at: :desc)
   end
 
   def show
-    @job = current_user.company.jobs.find(params[:id])
+    @job = current_user.company.jobs.includes(:languages, :shifts).find(params[:id])
   end
 
   def create
@@ -16,7 +16,7 @@ class Api::V1::Admin::JobsController < Api::V1::BaseController
     )
 
     if result.success?
-      @job = result.job
+      @job = Job.includes(:languages).find(result.job.id)
       render "api/v1/admin/jobs/show", locals: { job: @job }, formats: [ :json ], status: :created
     else
       render json: { errors: result.errors }, status: :unprocessable_entity
