@@ -1,5 +1,3 @@
-require 'swagger_helper'
-
 RSpec.describe 'Authentication API', type: :request do
   path '/api/v1/login' do
     post 'Authenticates user and returns JWT token' do

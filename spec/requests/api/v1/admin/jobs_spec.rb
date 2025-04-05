@@ -3,19 +3,23 @@ require 'swagger_helper'
 RSpec.describe 'API V1 Admin Jobs API', type: :request do
   let!(:admin_user) { create(:user, :admin) }
   let(:non_admin_user) { create(:user) }
+  let!(:english) { create(:language, name: 'english', code: 'en') }
 
   path '/api/v1/admin/jobs' do
     get 'Lists all jobs for the company' do
       tags 'Admin Jobs'
       security [ bearer_auth: [] ]
+      produces 'application/json'
 
       response '200', 'Jobs retrieved successfully' do
-        schema type: :array, items: { '$ref' => '#/components/schemas/job' }
+        schema '$ref' => '#/components/schemas/jobs_response'
 
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
+        let(:Accept) { 'application/json' }
 
         run_test! do |response|
-          expect(JSON.parse(response.body).length).to eq(admin_user.company.jobs.count)
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['jobs'].length).to eq(admin_user.company.jobs.count)
         end
       end
 
@@ -43,7 +47,12 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
             type: :object,
             properties: {
               title: { type: :string, example: 'Software Engineer' },
-              hourly_salary: { type: :number, format: :float, example: 35.50 }
+              hourly_salary: { type: :number, format: :float, example: 35.50 },
+              language_codes: {
+                type: :array,
+                items: { type: :string },
+                example: [ 'en' ]
+              }
             },
             required: [ :title, :hourly_salary ]
           }
@@ -52,13 +61,14 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
       }
 
       response '201', 'Job created successfully' do
-        schema '$ref' => '#/components/schemas/job'
+        schema '$ref' => '#/components/schemas/job_response'
 
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
-        let(:job) { { job: { title: 'Software Engineer', hourly_salary: 35.50 } } }
+        let(:job) { { job: { title: 'Software Engineer', hourly_salary: 35.50, language_codes: [ 'en' ] } } }
 
         run_test! do |response|
-          expect(JSON.parse(response.body)['title']).to eq('Software Engineer')
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['job']['title']).to eq('Software Engineer')
         end
       end
 
@@ -76,7 +86,6 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
 
       response '422', 'Invalid request' do
         schema '$ref' => '#/components/schemas/error'
-
 
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
         let(:job) { { job: { title: '', hourly_salary: -5 } } }
@@ -97,15 +106,16 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
       produces 'application/json'
 
       response '200', 'Job found' do
-        schema '$ref' => '#/components/schemas/job'
+        schema '$ref' => '#/components/schemas/job_response'
 
         let!(:admin_user) { create(:user, :admin) }
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
-        let!(:job) { create(:job, company: admin_user.company) }
+        let!(:job) { create(:job, company: admin_user.company, languages: [ english ]) }
         let(:id) { admin_user.company.jobs.first.id }
 
         run_test! do |response|
-          expect(JSON.parse(response.body)['id']).to eq(id)
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['job']['id']).to eq(id)
         end
       end
 

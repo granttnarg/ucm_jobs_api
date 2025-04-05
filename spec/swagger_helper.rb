@@ -39,11 +39,51 @@ RSpec.configure do |config|
             properties: {
               id: { type: :integer },
               title: { type: :string },
-              hourly_salary: { type: [ :number, :string ], format: :float },
-              created_at: { type: :string, format: :datetime },
-              updated_at: { type: :string, format: :datetime }
+              hourly_salary: { type: :string },
+              created_at: { type: :string, format: :date_time },
+              updated_at: { type: :string, format: :date_time },
+              company_id: { type: :integer },
+              creator_id: { type: :integer }
             },
             required: [ :id, :title, :hourly_salary ]
+          },
+
+          language: {
+            type: :object,
+            properties: {
+              name: { type: :string },
+              code: { type: :string }
+            },
+            required: [ :name, :code ]
+          },
+
+          jobs_response: {
+            type: :object,
+            properties: {
+              jobs: {
+                type: :array,
+                items: { '$ref' => '#/components/schemas/job_with_languages' }
+              },
+              meta: {
+                type: :object,
+                properties: {
+                  total_count: { type: :integer }
+                }
+              }
+            },
+            required: [ :jobs, :meta ]
+          },
+
+          job_response: {
+            type: :object,
+            properties: {
+              job: { '$ref' => '#/components/schemas/job' },
+              spoken_languages: {
+                type: :array,
+                items: { '$ref' => '#/components/schemas/language' }
+              }
+            },
+            required: [ :job, :spoken_languages ]
           },
 
           error: {
@@ -55,8 +95,27 @@ RSpec.configure do |config|
               }
             },
             required: [ :errors ]
+          },
+
+          job_with_languages: {
+            type: :object,
+            properties: {
+              id: { type: :integer },
+              title: { type: :string },
+              hourly_salary: { type: :string },
+              created_at: { type: :string, format: :date_time },
+              updated_at: { type: :string, format: :date_time },
+              company_id: { type: :integer },
+              creator_id: { type: :integer },
+              spoken_languages: {
+                type: :array,
+                items: { '$ref' => '#/components/schemas/language' }
+              }
+            },
+            required: [ :id, :title, :hourly_salary ]
           }
         },
+
         securitySchemes: {
           bearer_auth: {
             type: :http,

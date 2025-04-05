@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :job_application do
-    user { nil }
-    job { nil }
+    association :user
+    association :job
     status { "Pending" }
   end
 end

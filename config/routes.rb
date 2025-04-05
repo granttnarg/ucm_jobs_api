@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       post "refresh", to: "authentication#refresh"
 
       resources :jobs, only: [ :index, :show ]
+      resources :languages, only: [ :index ]
 
       namespace :admin do
         resources :jobs, only: [ :index, :show, :create ]
