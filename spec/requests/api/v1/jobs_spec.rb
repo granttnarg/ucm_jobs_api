@@ -14,6 +14,9 @@ RSpec.describe 'API V1 Jobs API', type: :request do
         run_test! do |response|
           parsed_response = JSON.parse(response.body)
           expect(parsed_response['jobs'].size).to eq(3)
+          expect(parsed_response['jobs'].first['spoken_languages']).to be_present
+          expect(parsed_response['jobs'].first['shifts_count']).to be_present
+          expect(parsed_response['jobs'].first['total_earnings']).to be_present
         end
       end
     end

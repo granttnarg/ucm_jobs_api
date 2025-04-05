@@ -12,12 +12,12 @@ class Api::V1::Admin::JobsController < Api::V1::BaseController
     result = Jobs::Creator.call(
       job_params: job_params,
       user: current_user,
-      company: current_user.company,
+      company: current_user.company
     )
 
     if result.success?
       @job = result.job
-      render "api/v1/jobs/show", locals: { job: @job }, formats: [ :json ], status: :created
+      render "api/v1/admin/jobs/show", locals: { job: @job }, formats: [ :json ], status: :created
     else
       render json: { errors: result.errors }, status: :unprocessable_entity
     end
