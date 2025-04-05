@@ -42,7 +42,7 @@ gem "rswag"
 gem "jwt"
 
 # For Language codes
-gem 'iso-639'
+gem "iso-639"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
