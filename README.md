@@ -32,20 +32,23 @@ Things you may want to cover:
 - unique email
 - password -->
 
-# Admin User
+<!-- # Admin User
 
-- we could perhaps the concept of admin user to make the job listing
+- we could perhaps the concept of admin user to make the job listing -->
 
 # Job (Listing) - connected to Admin User.
 
-- title
-- hourly salary
+<!-- - title
+- hourly salary -->
+
 - spoken language -> give room to expand this via gem or dedicated model
 - shift dates
 
 display on a job:
 
-- Title, Total earnings, Spoken Languages
+<!-- - Title, -->
+
+Total earnings, Spoken Languages
 
 # Job Application - connected to job and users
 
