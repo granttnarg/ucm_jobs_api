@@ -16,7 +16,9 @@ Rails.application.routes.draw do
       post "login", to: "authentication#create"
       post "refresh", to: "authentication#refresh"
 
-      resources :jobs, only: [ :index, :show ]
+      resources :jobs, only: [ :index, :show ] do
+        resources :job_applications, only: [ :create ]
+      end
       resources :languages, only: [ :index ]
 
       namespace :admin do

@@ -8,6 +8,12 @@ class User < ApplicationRecord
 
   validate :only_admins_can_have_company
 
+  def admin_of?(company)
+    return false if company_id.nil?
+
+    (company.id == company_id) && admin?
+  end
+
   def only_admins_can_have_company
     if company.present? && !admin?
       errors.add(:company, "can only be assigned to admin users")
