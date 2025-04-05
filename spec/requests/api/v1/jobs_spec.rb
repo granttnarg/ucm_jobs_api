@@ -13,10 +13,39 @@ RSpec.describe 'API V1 Jobs API', type: :request do
       produces 'application/json'
 
       response '200', 'jobs found' do
-        schema type: :array, items: { '$ref' => '#/components/schemas/job' }
+        schema type: :object,
+          properties: {
+            jobs: {
+              type: :array,
+              items: {
+                type: :object,
+                properties: {
+                  id: { type: :integer },
+                  title: { type: :string },
+                  hourly_salary: { type: :string },
+                  created_at: { type: :string, format: :date_time },
+                  updated_at: { type: :string, format: :date_time },
+                  company_id: { type: :integer },
+                  creator_id: { type: :integer },
+                  spoken_languages: {
+                    type: :array,
+                    items: { '$ref' => '#/components/schemas/language' }
+                  }
+                }
+              }
+            },
+            meta: {
+              type: :object,
+              properties: {
+                total_count: { type: :integer }
+              }
+            }
+          },
+          required: [ :jobs ]
 
         run_test! do |response|
-          expect(JSON.parse(response.body).size).to eq(3)
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['jobs'].size).to eq(3)
         end
       end
     end
@@ -30,13 +59,13 @@ RSpec.describe 'API V1 Jobs API', type: :request do
       produces 'application/json'
 
       response '200', 'job found' do
-        schema({ '$ref' => '#/components/schemas/job' })
+        schema({ '$ref' => '#/components/schemas/job_response' })
 
         let(:id) { job_id }
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['id']).to eq(job_id)
+          expect(data['job']['id']).to eq(job_id)
         end
       end
 

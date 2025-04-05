@@ -9,14 +9,52 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
     get 'Lists all jobs for the company' do
       tags 'Admin Jobs'
       security [ bearer_auth: [] ]
+      produces 'application/json'
 
       response '200', 'Jobs retrieved successfully' do
-        schema type: :array, items: { '$ref' => '#/components/schemas/job' }
+        schema type: :object,
+          properties: {
+            jobs: {
+              type: :array,
+              items: {
+                type: :object,
+                properties: {
+                  id: { type: :integer },
+                  title: { type: :string },
+                  hourly_salary: { type: :string },
+                  created_at: { type: :string, format: :date_time },
+                  updated_at: { type: :string, format: :date_time },
+                  company_id: { type: :integer },
+                  creator_id: { type: :integer },
+                  spoken_languages: {
+                    type: :array,
+                    items: {
+                      type: :object,
+                      properties: {
+                        name: { type: :string },
+                        code: { type: :string }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            meta: {
+              type: :object,
+              properties: {
+                total_count: { type: :integer }
+              }
+            }
+          },
+          required: [ :jobs, :meta ]
 
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
 
+        let(:Accept) { 'application/json' }
+
         run_test! do |response|
-          expect(JSON.parse(response.body).length).to eq(admin_user.company.jobs.count)
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['jobs'].length).to eq(admin_user.company.jobs.count)
         end
       end
 
@@ -44,7 +82,12 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
             type: :object,
             properties: {
               title: { type: :string, example: 'Software Engineer' },
-              hourly_salary: { type: :number, format: :float, example: 35.50 }
+              hourly_salary: { type: :number, format: :float, example: 35.50 },
+              language_codes: {
+                type: :array,
+                items: { type: :string },
+                example: [ 'en' ]
+              }
             },
             required: [ :title, :hourly_salary ]
           }
@@ -53,13 +96,14 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
       }
 
       response '201', 'Job created successfully' do
-        schema '$ref' => '#/components/schemas/job'
+        schema '$ref' => '#/components/schemas/job_response'
 
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
         let(:job) { { job: { title: 'Software Engineer', hourly_salary: 35.50, language_codes: [ 'en' ] } } }
 
         run_test! do |response|
-          expect(JSON.parse(response.body)['title']).to eq('Software Engineer')
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['job']['title']).to eq('Software Engineer')
         end
       end
 
@@ -77,7 +121,6 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
 
       response '422', 'Invalid request' do
         schema '$ref' => '#/components/schemas/error'
-
 
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
         let(:job) { { job: { title: '', hourly_salary: -5 } } }
@@ -98,7 +141,7 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
       produces 'application/json'
 
       response '200', 'Job found' do
-        schema '$ref' => '#/components/schemas/job'
+        schema '$ref' => '#/components/schemas/job_response'
 
         let!(:admin_user) { create(:user, :admin) }
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
@@ -106,7 +149,8 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
         let(:id) { admin_user.company.jobs.first.id }
 
         run_test! do |response|
-          expect(JSON.parse(response.body)['id']).to eq(id)
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['job']['id']).to eq(id)
         end
       end
 

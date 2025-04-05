@@ -39,11 +39,34 @@ RSpec.configure do |config|
             properties: {
               id: { type: :integer },
               title: { type: :string },
-              hourly_salary: { type: [ :number, :string ], format: :float },
-              created_at: { type: :string, format: :datetime },
-              updated_at: { type: :string, format: :datetime }
+              hourly_salary: { type: :string },
+              created_at: { type: :string, format: :date_time },
+              updated_at: { type: :string, format: :date_time },
+              company_id: { type: :integer },
+              creator_id: { type: :integer }
             },
             required: [ :id, :title, :hourly_salary ]
+          },
+
+          language: {
+            type: :object,
+            properties: {
+              name: { type: :string },
+              code: { type: :string }
+            },
+            required: [ :name, :code ]
+          },
+
+          job_response: {
+            type: :object,
+            properties: {
+              job: { '$ref' => '#/components/schemas/job' },
+              spoken_languages: {
+                type: :array,
+                items: { '$ref' => '#/components/schemas/language' }
+              }
+            },
+            required: [ :job, :spoken_languages ]
           },
 
           error: {
