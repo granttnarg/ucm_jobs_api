@@ -12,44 +12,9 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
       produces 'application/json'
 
       response '200', 'Jobs retrieved successfully' do
-        schema type: :object,
-          properties: {
-            jobs: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  id: { type: :integer },
-                  title: { type: :string },
-                  hourly_salary: { type: :string },
-                  created_at: { type: :string, format: :date_time },
-                  updated_at: { type: :string, format: :date_time },
-                  company_id: { type: :integer },
-                  creator_id: { type: :integer },
-                  spoken_languages: {
-                    type: :array,
-                    items: {
-                      type: :object,
-                      properties: {
-                        name: { type: :string },
-                        code: { type: :string }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            meta: {
-              type: :object,
-              properties: {
-                total_count: { type: :integer }
-              }
-            }
-          },
-          required: [ :jobs, :meta ]
+        schema '$ref' => '#/components/schemas/jobs_response'
 
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
-
         let(:Accept) { 'application/json' }
 
         run_test! do |response|

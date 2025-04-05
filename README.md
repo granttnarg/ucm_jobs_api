@@ -41,14 +41,17 @@ Things you may want to cover:
 <!-- - title
 - hourly salary -->
 
-- spoken language -> give room to expand this via gem or dedicated model
+<!-- - spoken language -> give room to expand this via gem or dedicated model -->
+
 - shift dates
 
 display on a job:
 
 <!-- - Title, -->
 
-Total earnings, Spoken Languages
+Total earnings
+
+<!-- Spoken Languages -->
 
 # Job Application - connected to job and users
 

@@ -1,5 +1,4 @@
 RSpec.describe 'API V1 Jobs API', type: :request do
-  # Create a job to use in tests
   let!(:company) { create(:company) }
   let!(:jobs) { create_list(:job, 3, company: company) }
   let(:job_id) { jobs.first.id }
@@ -10,35 +9,7 @@ RSpec.describe 'API V1 Jobs API', type: :request do
       produces 'application/json'
 
       response '200', 'jobs found' do
-        schema type: :object,
-          properties: {
-            jobs: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  id: { type: :integer },
-                  title: { type: :string },
-                  hourly_salary: { type: :string },
-                  created_at: { type: :string, format: :date_time },
-                  updated_at: { type: :string, format: :date_time },
-                  company_id: { type: :integer },
-                  creator_id: { type: :integer },
-                  spoken_languages: {
-                    type: :array,
-                    items: { '$ref' => '#/components/schemas/language' }
-                  }
-                }
-              }
-            },
-            meta: {
-              type: :object,
-              properties: {
-                total_count: { type: :integer }
-              }
-            }
-          },
-          required: [ :jobs ]
+        schema '$ref' => '#/components/schemas/jobs_response'
 
         run_test! do |response|
           parsed_response = JSON.parse(response.body)

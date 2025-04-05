@@ -57,6 +57,23 @@ RSpec.configure do |config|
             required: [ :name, :code ]
           },
 
+          jobs_response: {
+            type: :object,
+            properties: {
+              jobs: {
+                type: :array,
+                items: { '$ref' => '#/components/schemas/job_with_languages' }
+              },
+              meta: {
+                type: :object,
+                properties: {
+                  total_count: { type: :integer }
+                }
+              }
+            },
+            required: [ :jobs, :meta ]
+          },
+
           job_response: {
             type: :object,
             properties: {
@@ -78,8 +95,27 @@ RSpec.configure do |config|
               }
             },
             required: [ :errors ]
+          },
+
+          job_with_languages: {
+            type: :object,
+            properties: {
+              id: { type: :integer },
+              title: { type: :string },
+              hourly_salary: { type: :string },
+              created_at: { type: :string, format: :date_time },
+              updated_at: { type: :string, format: :date_time },
+              company_id: { type: :integer },
+              creator_id: { type: :integer },
+              spoken_languages: {
+                type: :array,
+                items: { '$ref' => '#/components/schemas/language' }
+              }
+            },
+            required: [ :id, :title, :hourly_salary ]
           }
         },
+
         securitySchemes: {
           bearer_auth: {
             type: :http,
