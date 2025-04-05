@@ -121,6 +121,9 @@ GEM
       reline (>= 0.4.2)
     iso-639 (0.3.8)
       csv
+    jbuilder (2.13.0)
+      actionview (>= 5.0.0)
+      activesupport (>= 5.0.0)
     json (2.10.2)
     json-schema (5.1.1)
       addressable (~> 2.8)
@@ -371,6 +374,7 @@ DEPENDENCIES
   debug
   factory_bot_rails
   iso-639
+  jbuilder
   jwt
   kamal
   pg (~> 1.1)
