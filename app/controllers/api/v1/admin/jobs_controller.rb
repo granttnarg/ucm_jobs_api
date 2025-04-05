@@ -2,12 +2,10 @@ class Api::V1::Admin::JobsController < Api::V1::BaseController
   before_action :require_admin
   def index
     @jobs = current_user.company.jobs
-    render json: @jobs, status: :ok
   end
 
   def show
     @job = current_user.company.jobs.find(params[:id])
-    render json: @job, status: :ok
   end
 
   def create
@@ -18,7 +16,8 @@ class Api::V1::Admin::JobsController < Api::V1::BaseController
     )
 
     if result.success?
-      render json: result.job, status: :created
+      @job = result.job
+      render "api/v1/jobs/show", locals: { job: @job }, formats: [ :json ], status: :created
     else
       render json: { errors: result.errors }, status: :unprocessable_entity
     end

@@ -1,9 +1,8 @@
 
-class Api::V1::LanguagesController < ApplicationController
+class Api::V1::LanguagesController < Api::V1::BaseController
   skip_before_action :authenticate_user, only: [ :index ]
 
   def index
     @languages = Language.all.order(:name)
-    render json: @languages.map { |lang| { code: lang.code, name: lang.name } }
   end
 end
