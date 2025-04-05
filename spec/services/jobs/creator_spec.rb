@@ -5,10 +5,13 @@ require 'rails_helper'
 RSpec.describe Jobs::Creator do
   let(:company) { create(:company) }
   let(:user) { create(:user, company:, admin: true) }
+  let(:english) { create(:language, code: 'en', name: 'English') }
+  let(:german) { create(:language, code: 'de', name: 'German') }
   let(:valid_job_params) do
     {
       title: 'Software Engineer',
-      hourly_salary: 20
+      hourly_salary: 20,
+      language_codes: [ english.code, german.code ]
     }
   end
 
@@ -53,6 +56,36 @@ RSpec.describe Jobs::Creator do
 
     context 'with invalid parameters' do
       let(:job_params) { { title: '' } } # Missing required fields
+
+      it 'does not create a job' do
+        expect { service_call }.not_to change(Job, :count)
+      end
+
+      it 'returns a failure status' do
+        expect(service_call.success?).to be false
+      end
+
+      it 'populates the errors array with validation messages' do
+        result = service_call
+        expect(result.errors).not_to be_empty
+      end
+
+      it 'rolls back the transaction' do
+        allow_any_instance_of(Job).to receive(:save).and_return(false)
+        allow_any_instance_of(Job).to receive(:errors).and_return(
+          double(full_messages: [ 'Title cannot be blank' ])
+        )
+
+        expect { service_call }.not_to change(Job, :count)
+      end
+    end
+
+    context 'with invalid language parametes' do
+      let(:job_params) { {
+        title: 'Software Engineer',
+        hourly_salary: 20,
+        language_codes: [ 'aa', 'de' ]
+      } }
 
       it 'does not create a job' do
         expect { service_call }.not_to change(Job, :count)

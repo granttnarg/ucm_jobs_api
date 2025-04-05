@@ -17,6 +17,7 @@ module Jobs
 
     def call
       ActiveRecord::Base.transaction do
+        handle_languages
         create_job
 
         raise ActiveRecord::Rollback if @errors.any?
@@ -35,9 +36,21 @@ module Jobs
       @job = Job.new(@job_params)
       @job.company = @company
       @job.creator = @user
+      @job.languages = @languages
 
       unless @job.save
         @errors.concat(@job.errors.full_messages)
+      end
+    end
+
+    def handle_languages
+      language_codes = @job_params.delete(:language_codes) || []
+
+      @languages = Language.where(code: language_codes)
+
+      if @languages.count != language_codes.uniq.count
+        missing_codes = language_codes - @languages.pluck(:code)
+        @errors << "Invalid language codes: #{missing_codes.join(', ')}"
       end
     end
   end
