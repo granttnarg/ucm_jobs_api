@@ -27,6 +27,6 @@ class Api::V1::Admin::JobsController < Api::V1::BaseController
   private
 
   def job_params
-    params.require(:job).permit(:title, :hourly_salary)
+    params.require(:job).permit(:title, :hourly_salary, language_codes: [])
   end
 end

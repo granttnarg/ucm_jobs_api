@@ -3,6 +3,7 @@ require 'swagger_helper'
 RSpec.describe 'API V1 Admin Jobs API', type: :request do
   let!(:admin_user) { create(:user, :admin) }
   let(:non_admin_user) { create(:user) }
+  let!(:english) { create(:language, name: 'english', code: 'en') }
 
   path '/api/v1/admin/jobs' do
     get 'Lists all jobs for the company' do
@@ -55,7 +56,7 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
         schema '$ref' => '#/components/schemas/job'
 
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
-        let(:job) { { job: { title: 'Software Engineer', hourly_salary: 35.50 } } }
+        let(:job) { { job: { title: 'Software Engineer', hourly_salary: 35.50, language_codes: [ 'en' ] } } }
 
         run_test! do |response|
           expect(JSON.parse(response.body)['title']).to eq('Software Engineer')
@@ -101,7 +102,7 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
 
         let!(:admin_user) { create(:user, :admin) }
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
-        let!(:job) { create(:job, company: admin_user.company) }
+        let!(:job) { create(:job, company: admin_user.company, languages: [ english ]) }
         let(:id) { admin_user.company.jobs.first.id }
 
         run_test! do |response|
