@@ -4,6 +4,168 @@ info:
   title: API V1
   version: v1
 paths:
+  "/api/v1/admin/jobs":
+    get:
+      summary: Lists all jobs for the company
+      tags:
+      - Admin Jobs
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: Jobs retrieved successfully
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized (not an admin)
+    post:
+      summary: Creates a new job
+      tags:
+      - Admin Jobs
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '201':
+          description: Job created successfully
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/job"
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized (not an admin)
+        '422':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                job:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                      example: Software Engineer
+                    hourly_salary:
+                      type: number
+                      format: float
+                      example: 35.5
+                  required:
+                  - title
+                  - hourly_salary
+              required:
+              - job
+  "/api/v1/admin/jobs/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieves a specific job
+      tags:
+      - Admin Jobs
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: Job found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/job"
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized (not an admin)
+        '404':
+          description: Job not found
+  "/api/v1/login":
+    post:
+      summary: Authenticates user and returns JWT token
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '200':
+          description: user authenticated
+        '401':
+          description: invalid credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+              - email
+              - password
+  "/api/v1/refresh":
+    post:
+      summary: Refreshes JWT token
+      tags:
+      - Authentication
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        description: Bearer token from login
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: token refreshed
+        '401':
+          description: invalid token
+  "/api/v1/jobs":
+    get:
+      summary: Lists all jobs
+      tags:
+      - Jobs
+      responses:
+        '200':
+          description: jobs found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/job"
+  "/api/v1/jobs/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieves a specific job
+      tags:
+      - Jobs
+      responses:
+        '200':
+          description: job found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/job"
+        '404':
+          description: job not found
   "/api/v1/signup":
     post:
       summary: Creates a user
@@ -44,3 +206,41 @@ servers:
   variables:
     defaultHost:
       default: www.example.com
+components:
+  schemas:
+    job:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        hourly_salary:
+          type:
+          - number
+          - string
+          format: float
+        created_at:
+          type: string
+          format: datetime
+        updated_at:
+          type: string
+          format: datetime
+      required:
+      - id
+      - title
+      - hourly_salary
+    error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+      required:
+      - errors
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

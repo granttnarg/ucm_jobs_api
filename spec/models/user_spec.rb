@@ -25,9 +25,17 @@ RSpec.describe User, type: :model do
       expect(user.errors[:password]).to include("can't be blank")
     end
 
-    it "it defaults to admin false" do
+    it "defaults to admin false" do
       user = create(:user)
       expect(user.admin?).to eq(false)
+    end
+
+    it "can only be linked to a company if its an admin" do
+      user = create(:user, admin: false)
+      company = create(:company)
+      user.company = company
+      user.save
+      expect(user.errors.full_messages).to eq([ "Company can only be assigned to admin users" ])
     end
   end
 end
