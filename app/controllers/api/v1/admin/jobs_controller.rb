@@ -12,7 +12,7 @@ class Api::V1::Admin::JobsController < Api::V1::BaseController
     result = Jobs::Creator.call(
       job_params: job_params,
       user: current_user,
-      company: current_user.company
+      company: current_user.company,
     )
 
     if result.success?
@@ -26,6 +26,6 @@ class Api::V1::Admin::JobsController < Api::V1::BaseController
   private
 
   def job_params
-    params.require(:job).permit(:title, :hourly_salary, language_codes: [])
+    params.require(:job).permit(:title, :hourly_salary, language_codes: [], shifts: [ :start_time, :end_time ])
   end
 end
