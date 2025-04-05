@@ -1,5 +1,3 @@
-require 'swagger_helper'
-
 RSpec.describe 'API V1 Registration', type: :request do
   path '/api/v1/signup' do
     post 'Creates a user' do

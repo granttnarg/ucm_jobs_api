@@ -14,6 +14,49 @@ paths:
       responses:
         '200':
           description: Jobs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        hourly_salary:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date_time
+                        updated_at:
+                          type: string
+                          format: date_time
+                        company_id:
+                          type: integer
+                        creator_id:
+                          type: integer
+                        spoken_languages:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              code:
+                                type: string
+                  meta:
+                    type: object
+                    properties:
+                      total_count:
+                        type: integer
+                required:
+                - jobs
+                - meta
         '401':
           description: Not authenticated
         '403':
@@ -31,7 +74,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/job"
+                "$ref": "#/components/schemas/job_response"
         '401':
           description: Not authenticated
         '403':
@@ -58,6 +101,12 @@ paths:
                       type: number
                       format: float
                       example: 35.5
+                    language_codes:
+                      type: array
+                      items:
+                        type: string
+                      example:
+                      - en
                   required:
                   - title
                   - hourly_salary
@@ -82,7 +131,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/job"
+                "$ref": "#/components/schemas/job_response"
         '401':
           description: Not authenticated
         '403':
@@ -143,9 +192,40 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  "$ref": "#/components/schemas/job"
+                type: object
+                properties:
+                  jobs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        hourly_salary:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date_time
+                        updated_at:
+                          type: string
+                          format: date_time
+                        company_id:
+                          type: integer
+                        creator_id:
+                          type: integer
+                        spoken_languages:
+                          type: array
+                          items:
+                            "$ref": "#/components/schemas/language"
+                  meta:
+                    type: object
+                    properties:
+                      total_count:
+                        type: integer
+                required:
+                - jobs
   "/api/v1/jobs/{id}":
     parameters:
     - name: id
@@ -163,9 +243,33 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/job"
+                "$ref": "#/components/schemas/job_response"
         '404':
           description: job not found
+  "/api/v1/languages":
+    get:
+      summary: Lists all languages
+      tags:
+      - Languages
+      responses:
+        '200':
+          description: languages found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  languages:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/language"
+                  meta:
+                    type: object
+                    properties:
+                      total_count:
+                        type: integer
+                required:
+                - languages
   "/api/v1/signup":
     post:
       summary: Creates a user
@@ -216,20 +320,43 @@ components:
         title:
           type: string
         hourly_salary:
-          type:
-          - number
-          - string
-          format: float
+          type: string
         created_at:
           type: string
-          format: datetime
+          format: date_time
         updated_at:
           type: string
-          format: datetime
+          format: date_time
+        company_id:
+          type: integer
+        creator_id:
+          type: integer
       required:
       - id
       - title
       - hourly_salary
+    language:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+      required:
+      - name
+      - code
+    job_response:
+      type: object
+      properties:
+        job:
+          "$ref": "#/components/schemas/job"
+        spoken_languages:
+          type: array
+          items:
+            "$ref": "#/components/schemas/language"
+      required:
+      - job
+      - spoken_languages
     error:
       type: object
       properties:

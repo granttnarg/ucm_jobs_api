@@ -1,6 +1,3 @@
-# spec/requests/api/v1/jobs_spec.rb
-require 'swagger_helper'
-
 RSpec.describe 'API V1 Jobs API', type: :request do
   # Create a job to use in tests
   let!(:company) { create(:company) }
