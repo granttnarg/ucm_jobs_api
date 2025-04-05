@@ -22,7 +22,9 @@ company = Company.create!(name: "Big Tech")
 admin.company = company
 admin.save
 
-Job.create!(title: "Senior Dev", hourly_salary: 50, company:, user_id: admin.id)
-Job.create!(title: "Jnr Dev", hourly_salary: 1, company:, user_id: admin.id)
+languages = [ Language.find_or_create_by!(name: "English", code: 'en'), Language.find_or_create_by!(name: "German", code: 'de') ]
+
+Job.create!(title: "Senior Dev", hourly_salary: 50, company:, user_id: admin.id, languages:)
+Job.create!(title: "Jnr Dev", hourly_salary: 1, company:, user_id: admin.id, languages:)
 
 puts "Seeds Created"
