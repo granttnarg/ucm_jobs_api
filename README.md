@@ -1,7 +1,19 @@
 # README
 
-This is a Backend Rails API designed to be digested by a Client that can work with json responses.
-Jwt Authorization is integrated for certain endpoints. See the Swagger docs for more info.
+This is a backend-only Ruby on Rails API (v8.x) designed for JSON clients. It supports JWT-based authentication and is documented via Swagger (Rswag/Open API 3).
+
+> 🚧 MVP – WIP in development, planned improvements include Docker and CI/CD
+
+# Features
+
+- User Signup
+- JWT Authentication (with refresh flow)
+- Role-based authorization (admin vs regular users)
+- Job / JobApplication create and listings
+- Shift and Language support with seedable data
+- PostgreSQL with pg_trgm for fuzzy search (planned)
+- RSpec test suite
+- Swagger/OpenAPI 3 docs (via RSwag)
 
 ## Ruby version
 
@@ -9,12 +21,11 @@ Jwt Authorization is integrated for certain endpoints. See the Swagger docs for 
 
 ## Rails version
 
-- 8.x.x
+- 8.x.x (API-only mode)
 
 ## System dependencies
 
 - PostgreSQL (for `pg_trgm` extension)
-- Redis (optional for background jobs with Sidekiq)
 
 ## Configuration
 
@@ -25,85 +36,84 @@ Jwt Authorization is integrated for certain endpoints. See the Swagger docs for 
 2. Install dependencies
    `bundle install`
 
-3. Database Creation
+3. ENV file
+   `cp .env.example .env`
+   env.example can be set to .env. You will find the standard keys required in there.
+   Set your RAILS_MASTER_KEY using the contents of config/master.key. This is required to decrypt Rails credentials.
+
+4. Rails credentials
+   `bin/rails credentials:edit`
+   You can store secrets like JWT_SECRET here. If not set, the app will fall back to the Rails.application.secret_key_base.
+
+   Generate a secure base64 secret with for your JWT_SECRET:
+   `openssl rand -base64 64`
+
+5. Database Creation
    `rails db:create`
 
-4. a Database Intialization
+6. Database Initalization
+
    `rails db:migrate db:seed`
    Seeds here are for development use only.
 
-5. b Admin Users
+   `rails db:seed_european_languages` - seeds additional common European languages (recommended for staging/production)
+
+7. Admin Users
    Only non-admin users can be made by the api using the /signup route.
    If you want to create jobs under POST admin/jobs you must use an admin user, check seed.rb
    there is an admin user you can use setup there with default credentials
 
-6. To Run test suite
+8. To Run test suite
    `bundle exec rspec`
 
-7. Swagger file generation - optional
+9. Swagger file generation - optional
    `rails rswag:specs:swaggerize`
    This will recreate swagger.yaml for documentation. This is only required if you make changes to the Rswag specs or configuration.
-   \*\* Also please note there is a bug with the swaggerize command. see swagger_helper.rb for more info on how this can overwrite our `bearerAuth` key and cause issues with
-   the api-docs ui.
 
-8. ENV file
-   env.example can be set to .env. You will find the standard keys required in there. Its important to set your RAILS_MASTER_KEY from master.key in order to use the Rails credentials.
+   ⚠️ Note: This command can overwrite the bearerAuth key in swagger_helper.rb, causing issues with JWT auth in /api-docs. A workaround is documented in the helper file.
 
-9. Rails credentials
-   `bin/rails credentials:edit`
-   Use this command to edit our rails credentials. Currently we don't have any third party keys or secrets that need to be stored here. But any sensitive data
-   Can be stored here in future and adding to development and production namespacing accordingly.
+10. API Documentation
+    Swagger UI is available for testing our api at:
+    `/api-docs`
+    Uses RSwag for request specs and documentation generation.
 
-10. Jwt Tokens
-    Tokens can be redeeded and refreshed via api/{version}/login and api/{version}/refresh for registered users. They are limited to user within 24 hours by default. JWT_EXPIRY_DEFAULT= can be set in a .env file to adjust this.
+11. Jwt Tokens
 
-    Note the standard bearer token header format used to submit the token for locked endpoints.
+    Login: POST /api/v1/login
+
+    Token Refresh: POST /api/v1/refresh
+
+    Tokens expire after 24 hours by default. You can configure this via: JWT_EXPIRY_DEFAULT= in your .env file
+
+    Header Format:
     `Authorization: Bearer <token>`
 
-    \*\*You can set a jwt_secret for developement/production in our rails credentials file using:
-    `bin/rails credentials:edit`
-    It fallsback to your rails secret keybase if this is not set.
-
-    User a Bash command like this to create your own base 64 secret.
-    `openssl rand -base64 64`
-
-11. Seeding Languages data
-    `rails db:seed_european_languages`
-
-    This will seed a subset of common european languages for development, staging or production. Tasks can be extended if you need more languages in future.
-    See config/initializers/constants.rb to extend sets of language codes for use in the rake tasks.
-
-    Rswag for Swagger-based API documentation (/api-docs)
+    \*\* User must be signed up before they can retrive a jwt token.
 
 ## Deployment instructions
 
-Currently, the application is not dockerized, but here are the general steps for deployment on a server or cloud platform:
+Heroku (MVP Stage)
 
-1. **Prepare the server environment:**
+1. Add remote:
+   `git remote add heroku https://git.heroku.com/<REPO>.git`
 
-   - Ensure the server has Ruby 3.2.0 and PostgreSQL installed.
+2. Push to Heroku:
+   `git push heroku main`
 
-2. **Deploying with Heroku (for example):**
+3. On Heroku, run:
+   `heroku run rails db:migrate`
+   `heroku run rails db:seed_european_languages`
 
-   - Push the repository to Heroku using Git:
+4. Admin User will need to be made mainly on the console. See the seed.rb for how this works.
 
-     ```
-     git remote add heroku https://git.heroku.com/your-app.git
-     git push heroku master
-     ```
+Docker (Planned)
+Rails 8 includes a basic Docker setup scaffold, but it hasn't been customized yet. Docker support is planned for improved consistency across dev environments.
 
-   - Set environment variables for the production environment (e.g., database URL, Redis URL, etc.)
+CI/CD (Planned)
+A basic CI pipeline (GitHub Actions) will:
 
-   - Run migrations and seed languages the database on Heroku for Staging.
-     ```bash
-     heroku run rails db:migrate
-     heroku run rails db:seed_european_languages
-     ```
+- Run tests on PRs
 
-3. **Deployment with Docker (future plan):**
+- Require approvals before merging
 
-   - Rails 8 now comes with a basic docker setup. This has not be tweaked or configured for deployment and would need to be done as a follow up task.
-
-4. **CI/CD (future plan):**
-
-   - Set up Continuous Integration and Continuous Deployment with tools like GitHub Actions, CircleCI, or GitLab CI.
+- Enable automated deployments on merge
