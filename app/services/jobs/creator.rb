@@ -69,8 +69,8 @@ module Jobs
         shift = Shift.new(shift_param)
 
         # Convert times to UTC
-        shift.start_time = shift.start_time.utc if shift.start_time
-        shift.end_time = shift.end_time.utc if shift.end_time
+        shift.start_datetime = shift.start_datetime.utc if shift.start_datetime
+        shift.end_datetime = shift.end_datetime.utc if shift.end_datetime
         @shifts << shift
       end
     end

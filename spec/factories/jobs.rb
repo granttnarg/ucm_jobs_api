@@ -12,7 +12,7 @@ FactoryBot.define do
       end
 
       if job.shifts.empty?
-        shift = Shift.create(start_time: Time.current.beginning_of_hour + 1.hour, end_time: Time.current.beginning_of_hour + 2.hour)
+        shift = Shift.create(start_datetime: Time.current.beginning_of_hour + 1.hour, end_datetime: Time.current.beginning_of_hour + 2.hour)
         job.shifts << shift
       end
     end

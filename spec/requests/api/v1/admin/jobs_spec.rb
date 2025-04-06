@@ -68,7 +68,7 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
         schema '$ref' => '#/components/schemas/job_response'
 
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
-        let!(:shift_params) { [ { start_time: Time.zone.now + 10.days, end_time: Time.zone.now + 11.days } ] }
+        let!(:shift_params) { [ { start_datetime: Time.zone.now + 10.days, end_datetime: Time.zone.now + 11.days } ] }
         let(:job) { { job: { title: 'Software Engineer', hourly_salary: 35.50, language_codes: [ 'en' ], shifts: shift_params } } }
 
         run_test! do |response|
@@ -76,7 +76,7 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
           expect(parsed_response['job']['title']).to eq('Software Engineer')
           expect(parsed_response['spoken_languages']).to be_present
           expect(parsed_response['shifts']).to be_present
-          expect(parsed_response['shifts'].first['start_time']).to be_present
+          expect(parsed_response['shifts'].first['start_datetime']).to be_present
         end
       end
 

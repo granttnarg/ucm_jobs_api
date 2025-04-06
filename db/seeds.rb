@@ -35,48 +35,48 @@ languages = [ german, english ]
 job1 = Job.new(title: "Senior Dev", hourly_salary: 50, company:, user_id: admin.id)
 job1.languages = languages
 job1.shifts.build(
-  start_time: Time.current.beginning_of_day + 9.hours,
-  end_time: Time.current.beginning_of_day + 17.hours
+  start_datetime: Time.current.beginning_of_day + 9.hours,
+  end_datetime: Time.current.beginning_of_day + 17.hours
 )
 job1.save!
 
 2.times do |i|
   Shift.create!(
     job: job1,
-    start_time: Time.current.beginning_of_day + (i + 1).days + 9.hours,
-    end_time: Time.current.beginning_of_day + (i + 1).days + 17.hours
+    start_datetime: Time.current.beginning_of_day + (i + 1).days + 9.hours,
+    end_datetime: Time.current.beginning_of_day + (i + 1).days + 17.hours
   )
 end
 
 job2 = Job.new(title: "Jnr Dev", hourly_salary: 20, company:, user_id: admin.id)
 job2.languages << german
 job2.shifts.build(
-  start_time: Time.current.beginning_of_day + 9.hours,
-  end_time: Time.current.beginning_of_day + 17.hours
+  start_datetime: Time.current.beginning_of_day + 9.hours,
+  end_datetime: Time.current.beginning_of_day + 17.hours
 )
 job2.save!
 
 2.times do |i|
   Shift.create!(
     job: job2,
-    start_time: Time.current.beginning_of_day + (i + 1).days + 9.hours,
-    end_time: Time.current.beginning_of_day + (i + 1).days + 17.hours
+    start_datetime: Time.current.beginning_of_day + (i + 1).days + 9.hours,
+    end_datetime: Time.current.beginning_of_day + (i + 1).days + 17.hours
   )
 end
 
 job3 = Job.new(title: "HR Manager", hourly_salary: 25.50, company: company_2, user_id: admin_2.id)
 job3.languages << german
 job3.shifts.build(
-  start_time: Time.current.beginning_of_day + 9.hours,
-  end_time: Time.current.beginning_of_day + 17.hours
+  start_datetime: Time.current.beginning_of_day + 9.hours,
+  end_datetime: Time.current.beginning_of_day + 17.hours
 )
 job3.save!
 
 2.times do |i|
   Shift.create!(
     job: job3,
-    start_time: Time.current.beginning_of_day + (i + 1).days + 9.hours,
-    end_time: Time.current.beginning_of_day + (i + 1).days + 17.hours
+    start_datetime: Time.current.beginning_of_day + (i + 1).days + 9.hours,
+    end_datetime: Time.current.beginning_of_day + (i + 1).days + 17.hours
   )
 end
 
