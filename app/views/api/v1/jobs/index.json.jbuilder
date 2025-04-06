@@ -6,5 +6,5 @@ json.jobs @jobs do |job|
 end
 
 json.meta do
-  json.total_count @jobs.size
+  json.partial! "api/v1/shared/meta", collection: @jobs
 end

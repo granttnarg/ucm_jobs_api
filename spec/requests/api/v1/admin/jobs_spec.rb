@@ -21,7 +21,7 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
           parsed_response = JSON.parse(response.body)
           job = parsed_response['jobs'].first
           expect(parsed_response['jobs'].length).to eq(admin_user.company.jobs.count)
-          expect(parsed_response['meta']["total_count"]).to be(1)
+          expect(parsed_response['meta']["collection_count"]).to be(1)
           expect(job['shifts_count']).to be(1)
           expect(job['spoken_languages']).to be_present
         end

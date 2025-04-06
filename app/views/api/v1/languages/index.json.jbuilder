@@ -3,5 +3,5 @@ json.languages @languages do |language|
 end
 
 json.meta do
-  json.total_count @languages.size
+  json.partial! "api/v1/shared/meta", collection: @languages
 end

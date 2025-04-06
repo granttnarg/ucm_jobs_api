@@ -5,7 +5,8 @@ class Api::V1::AuthenticationController < Api::V1::BaseController
 
     if @user&.authenticate(params[:password])
       token = JwtService.encode({ user_id: @user.id })
-      # expires_at could be useful to return, depending how this is being used.
+
+      # TODO: expires_at could be useful to return, depending how this endpoint is consumed
       render json: { user: @user.as_json(except: :password_digest), token: token }, status: :ok
     else
       render json: { error: "Invalid User Credentials" }, status: :unauthorized
