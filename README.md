@@ -68,8 +68,9 @@ This is a backend-only Ruby on Rails API (v8.x) designed for JSON clients. It su
    If you want to create jobs under POST admin/jobs you must use an admin user, check seed.rb
    there is an admin user you can use setup there with default credentials
 
-8. To Run test suite
+8. To Run test suite and ruby linting
    `bundle exec rspec`
+   `bundle exec rubocop`
 
 9. Swagger file generation - optional
    ⚠️ Note: This command can overwrite the bearerAuth key in swagger_helper.rb, causing issues with JWT auth in /api-docs. A workaround is documented in the helper file.
