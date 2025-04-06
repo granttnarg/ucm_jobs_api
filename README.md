@@ -5,7 +5,7 @@ Jwt Authorization is integrated for certain endpoints. See the Swagger docs for 
 
 ## Ruby version
 
-- 3.2.0
+- 3.2.x
 
 ## Rails version
 
@@ -47,18 +47,25 @@ Jwt Authorization is integrated for certain endpoints. See the Swagger docs for 
    the api-docs ui.
 
 8. ENV file
-   .env.copy can be set to .env. You will find the standard keys required in there.
+   env.example can be set to .env. You will find the standard keys required in there. Its important to set your RAILS_MASTER_KEY from master.key in order to use the Rails credentials.
 
 9. Rails credentials
-   ?
+   `bin/rails credentials:edit`
+   Use this command to edit our rails credentials. Currently we don't have any third party keys or secrets that need to be stored here. But any sensitive data
+   Can be stored here in future and adding to development and production namespacing accordingly.
 
 10. Jwt Tokens
     Tokens can be redeeded and refreshed via api/{version}/login and api/{version}/refresh for registered users. They are limited to user within 24 hours by default. JWT_EXPIRY_DEFAULT= can be set in a .env file to adjust this.
 
-    Not the standard header format used to submit the token for locked endpoints.
+    Note the standard bearer token header format used to submit the token for locked endpoints.
     `Authorization: Bearer <token>`
 
-    \*\*Please not the JWT Token service encryption relies on your Rails secret keybase, which should be generated and saved automatically by Rails.
+    \*\*You can set a jwt_secret for developement/production in our rails credentials file using:
+    `bin/rails credentials:edit`
+    It fallsback to your rails secret keybase if this is not set.
+
+    User a Bash command like this to create your own base 64 secret.
+    `openssl rand -base64 64`
 
 11. Seeding Languages data
     `rails db:seed_european_languages`
