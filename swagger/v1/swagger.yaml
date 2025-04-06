@@ -330,8 +330,6 @@ components:
           type: integer
         title:
           type: string
-        hourly_salary:
-          type: string
         created_at:
           type: string
           format: date_time
@@ -366,7 +364,7 @@ components:
         meta:
           type: object
           properties:
-            total_count:
+            collection_count:
               type: integer
       required:
         - jobs
@@ -399,17 +397,12 @@ components:
           type: integer
         title:
           type: string
-        hourly_salary:
-          type: string
+        total_earnings:
+          type: integer
         created_at:
           type: string
           format: date_time
-        updated_at:
-          type: string
-          format: date_time
         company_id:
-          type: integer
-        creator_id:
           type: integer
         spoken_languages:
           type: array
