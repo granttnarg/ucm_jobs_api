@@ -8,25 +8,27 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Defines the root path route ("/")
-  # root "posts#index"
-  #
-  namespace :api do
-    namespace :v1 do
-      post "signup", to: "registration#create"
-      post "login", to: "authentication#create"
-      post "refresh", to: "authentication#refresh"
+  root to: redirect("/api-docs")
 
-      resources :jobs, only: [ :index, :show ] do
-        collection do
-          get :search
+  scope defaults: { format: :json } do
+    namespace :api do
+      namespace :v1 do
+        post "signup", to: "registration#create"
+        post "login", to: "authentication#create"
+        post "refresh", to: "authentication#refresh"
+
+        resources :jobs, only: [ :index, :show ] do
+          collection do
+            get :search
+          end
+
+          resources :job_applications, only: [ :create ]
         end
+        resources :languages, only: [ :index ]
 
-        resources :job_applications, only: [ :create ]
-      end
-      resources :languages, only: [ :index ]
-
-      namespace :admin do
-        resources :jobs, only: [ :index, :show, :create ]
+        namespace :admin do
+          resources :jobs, only: [ :index, :show, :create ]
+        end
       end
     end
   end

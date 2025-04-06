@@ -32,3 +32,10 @@
 /config/master.key
 
 .env
+
+#Ignore vim swap files
+*.swp
+
+/config/credentials.yml.enc
+/config/master.key
+

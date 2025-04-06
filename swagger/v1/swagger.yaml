@@ -3,44 +3,58 @@ openapi: 3.0.1
 info:
   title: API V1
   version: v1
+  description: |
+    ## Welcome to the UCM Jobs API
+
+    This is a backend-only Rails API for managing jobs, users, and job_applications.
+
+    JWT authentication is required for most endpoints. Admin role for admin endpoints
+
+    Admin Users can not currently be made by the api. `Check Repo documentation for more info on admins`
+
+    You can sign up normal users via `api/v1/signup`
+
+    All Users please login via `/api/v1/login`. The return jwt token can then be used in `Authorize` or as a Bearer token.
+
+    ---
 paths:
   "/api/v1/admin/jobs":
     get:
       summary: Lists all jobs for the company
       tags:
-      - Admin Jobs
+        - Admin Jobs
       security:
-      - bearer_auth: []
+        - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Jobs retrieved successfully
           content:
             application/json:
               schema:
                 "$ref": "#/components/schemas/jobs_response"
-        '401':
+        "401":
           description: Not authenticated
-        '403':
+        "403":
           description: Not authorized (not an admin)
     post:
       summary: Creates a new job
       tags:
-      - Admin Jobs
+        - Admin Jobs
       security:
-      - bearer_auth: []
+        - bearerAuth: []
       parameters: []
       responses:
-        '201':
+        "201":
           description: Job created successfully
           content:
             application/json:
               schema:
                 "$ref": "#/components/schemas/job_response"
-        '401':
+        "401":
           description: Not authenticated
-        '403':
+        "403":
           description: Not authorized (not an admin)
-        '422':
+        "422":
           description: Invalid request
           content:
             application/json:
@@ -67,48 +81,48 @@ paths:
                       items:
                         type: string
                       example:
-                      - en
+                        - en
                   required:
-                  - title
-                  - hourly_salary
+                    - title
+                    - hourly_salary
               required:
-              - job
+                - job
   "/api/v1/admin/jobs/{id}":
     parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: integer
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
     get:
       summary: Retrieves a specific job
       tags:
-      - Admin Jobs
+        - Admin Jobs
       security:
-      - bearer_auth: []
+        - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Job found
           content:
             application/json:
               schema:
                 "$ref": "#/components/schemas/job_response"
-        '401':
+        "401":
           description: Not authenticated
-        '403':
+        "403":
           description: Not authorized (not an admin)
-        '404':
+        "404":
           description: Job not found
   "/api/v1/login":
     post:
       summary: Authenticates user and returns JWT token
       tags:
-      - Authentication
+        - Authentication
       parameters: []
       responses:
-        '200':
+        "200":
           description: user authenticated
-        '401':
+        "401":
           description: invalid credentials
       requestBody:
         content:
@@ -121,34 +135,89 @@ paths:
                 password:
                   type: string
               required:
-              - email
-              - password
+                - email
+                - password
   "/api/v1/refresh":
     post:
       summary: Refreshes JWT token
       tags:
-      - Authentication
+        - Authentication
       security:
-      - bearer_auth: []
+        - bearerAuth: []
       parameters:
-      - name: Authorization
-        in: header
-        description: Bearer token from login
+        - name: Authorization
+          in: header
+          description: Bearer token from login
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: token refreshed
+        "401":
+          description: invalid token
+  "/api/v1/jobs/{job_id}/job_applications":
+    parameters:
+      - name: job_id
+        in: path
         required: true
         schema:
-          type: string
+          type: integer
+    post:
+      summary: Applies to a job
+      tags:
+        - Job Applications
+      security:
+        - bearerAuth: []
       responses:
-        '200':
-          description: token refreshed
-        '401':
-          description: invalid token
+        "201":
+          description: Application submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Successfully applied to job. Your reference id: 123"
+                required:
+                  - message
+        "401":
+          description: Not authenticated
+        "404":
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Job not found
+                required:
+                  - error
+        "422":
+          description: Application could not be processed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: array
+                    items:
+                      type: string
+                    example:
+                      - You have already applied to this job
+                required:
+                  - error
   "/api/v1/jobs":
     get:
       summary: Lists all jobs
       tags:
-      - Jobs
+        - Jobs
       responses:
-        '200':
+        "200":
           description: jobs found
           content:
             application/json:
@@ -156,31 +225,59 @@ paths:
                 "$ref": "#/components/schemas/jobs_response"
   "/api/v1/jobs/{id}":
     parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: integer
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
     get:
       summary: Retrieves a specific job
       tags:
-      - Jobs
+        - Jobs
       responses:
-        '200':
+        "200":
           description: job found
           content:
             application/json:
               schema:
                 "$ref": "#/components/schemas/job_response"
-        '404':
+        "404":
           description: job not found
+  "/api/v1/jobs/search":
+    get:
+      summary: Searches for jobs with filters
+      tags:
+        - Jobs
+      parameters:
+        - name: title
+          in: query
+          required: false
+          description: Filter jobs by title (partial match)
+          schema:
+            type: string
+        - name: language_codes
+          in: query
+          items:
+            type: string
+          collectionFormat: multi
+          required: false
+          description: Filter jobs by language codes
+          schema:
+            type: array
+      responses:
+        "200":
+          description: search results found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/jobs_response"
   "/api/v1/languages":
     get:
       summary: Lists all languages
       tags:
-      - Languages
+        - Languages
       responses:
-        '200':
+        "200":
           description: languages found
           content:
             application/json:
@@ -197,17 +294,17 @@ paths:
                       total_count:
                         type: integer
                 required:
-                - languages
+                  - languages
   "/api/v1/signup":
     post:
       summary: Creates a user
       tags:
-      - Registration
+        - Registration
       parameters: []
       responses:
-        '201':
+        "201":
           description: user created
-        '422':
+        "422":
           description: invalid request
       requestBody:
         content:
@@ -228,16 +325,16 @@ paths:
                       type: string
                       example: password123
                   required:
-                  - email
-                  - password
-                  - password_confirmation
+                    - email
+                    - password
+                    - password_confirmation
               required:
-              - user
+                - user
 servers:
-- url: https://{defaultHost}
-  variables:
-    defaultHost:
-      default: www.example.com
+  - url: http://localhost:3000
+    variables:
+      defaultHost:
+        default: www.example.com
 components:
   schemas:
     job:
@@ -247,22 +344,19 @@ components:
           type: integer
         title:
           type: string
-        hourly_salary:
-          type: string
+        total_earnings:
+          type: float
         created_at:
-          type: string
-          format: date_time
-        updated_at:
           type: string
           format: date_time
         company_id:
           type: integer
-        creator_id:
-          type: integer
       required:
-      - id
-      - title
-      - hourly_salary
+        - id
+        - title
+        - total_earnings
+        - company_id
+        - created_at
     language:
       type: object
       properties:
@@ -271,8 +365,8 @@ components:
         code:
           type: string
       required:
-      - name
-      - code
+        - name
+        - code
     jobs_response:
       type: object
       properties:
@@ -283,11 +377,11 @@ components:
         meta:
           type: object
           properties:
-            total_count:
+            collection_count:
               type: integer
       required:
-      - jobs
-      - meta
+        - jobs
+        - meta
     job_response:
       type: object
       properties:
@@ -298,8 +392,8 @@ components:
           items:
             "$ref": "#/components/schemas/language"
       required:
-      - job
-      - spoken_languages
+        - job
+        - spoken_languages
     error:
       type: object
       properties:
@@ -308,7 +402,7 @@ components:
           items:
             type: string
       required:
-      - errors
+        - errors
     job_with_languages:
       type: object
       properties:
@@ -316,28 +410,27 @@ components:
           type: integer
         title:
           type: string
-        hourly_salary:
-          type: string
+        total_earnings:
+          type: float
         created_at:
           type: string
           format: date_time
-        updated_at:
-          type: string
-          format: date_time
         company_id:
-          type: integer
-        creator_id:
           type: integer
         spoken_languages:
           type: array
           items:
             "$ref": "#/components/schemas/language"
       required:
-      - id
-      - title
-      - hourly_salary
+        - id
+        - title
+        - total_earnings
+        - company_id
+        - created_at
   securitySchemes:
-    bearer_auth:
+    bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+security:
+  - bearerAuth: []

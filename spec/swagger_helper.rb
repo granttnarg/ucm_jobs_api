@@ -19,12 +19,27 @@ RSpec.configure do |config|
       openapi: '3.0.1',
       info: {
         title: 'API V1',
-        version: 'v1'
+        version: 'v1',
+        description: <<~DESC
+        ## Welcome to the UCM Jobs API
+
+        This is a backend-only Rails API for managing jobs, users, and job_applications.
+
+        JWT authentication is required for most endpoints. Admin role for admin endpoints
+
+        Admin Users can not currently be made by the api. `Check Repo documentation for more info on admins`
+
+        You can sign up normal users via `api/v1/signup`
+
+        All Users please login via `/api/v1/login`. The return jwt token can then be used in `Authorize` or as a Bearer token.
+
+        ---
+      DESC
       },
       paths: {},
       servers: [
         {
-          url: 'https://{defaultHost}',
+          url: 'http://localhost:3000',
           variables: {
             defaultHost: {
               default: 'www.example.com'
@@ -39,13 +54,11 @@ RSpec.configure do |config|
             properties: {
               id: { type: :integer },
               title: { type: :string },
-              hourly_salary: { type: :string },
+              total_earnings: { type: :float },
               created_at: { type: :string, format: :date_time },
-              updated_at: { type: :string, format: :date_time },
-              company_id: { type: :integer },
-              creator_id: { type: :integer }
+              company_id: { type: :integer }
             },
-            required: [ :id, :title, :hourly_salary ]
+            required: [ :id, :title, :total_earnings, :company_id, :created_at ]
           },
 
           language: {
@@ -67,7 +80,7 @@ RSpec.configure do |config|
               meta: {
                 type: :object,
                 properties: {
-                  total_count: { type: :integer }
+                  collection_count: { type: :integer }
                 }
               }
             },
@@ -102,28 +115,32 @@ RSpec.configure do |config|
             properties: {
               id: { type: :integer },
               title: { type: :string },
-              hourly_salary: { type: :string },
+              total_earnings: { type: :float },
               created_at: { type: :string, format: :date_time },
-              updated_at: { type: :string, format: :date_time },
               company_id: { type: :integer },
-              creator_id: { type: :integer },
               spoken_languages: {
                 type: :array,
                 items: { '$ref' => '#/components/schemas/language' }
               }
             },
-            required: [ :id, :title, :hourly_salary ]
+            required: [ :id, :title, :total_earnings, :company_id, :created_at ]
           }
         },
 
         securitySchemes: {
+          # NB:: In order for the swagger-ui /api-docs to work correctly `bearer_auth` needs to be switched out for `BearerAuth`, in swagger.yaml.
+          # swagger.yaml is generated so these changes are lost if updated by swaggerize command.
+          # Without this change the Authorization header is not sent properly and your user will appear unauthorized.
+          # This is clearly a bug on how in the swaggerize command parses our schema config. Im not sure how to fix this just yet.
+          # Finally bearer_auth needs to remain in this file also, otherwise our swagger specs will fail.
           bearer_auth: {
             type: :http,
             scheme: :bearer,
-            bearerFormat: 'JWT'
+            bearerFormat: :JWT
           }
         }
-      }
+      },
+      security: [ { bearerAuth: [] } ] # Applies globally
     }
   }
 

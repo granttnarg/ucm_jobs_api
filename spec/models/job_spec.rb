@@ -46,20 +46,20 @@ RSpec.describe Job, type: :model do
 
          shift_1 = create(:shift,
           job: job,
-          start_time: Time.zone.parse('2050-04-05 23:00:00'),
-          end_time: Time.zone.parse('2050-04-06 2:00:00')
+          start_datetime: Time.zone.parse('2050-04-05 23:00:00'),
+          end_datetime: Time.zone.parse('2050-04-06 2:00:00')
         ) # 3 hours
 
         shift_2 = create(:shift,
           job: job,
-          start_time: Time.zone.parse('2050-04-06 10:00:00'),
-          end_time: Time.zone.parse('2050-04-06 11:00:00')
+          start_datetime: Time.zone.parse('2050-04-06 10:00:00'),
+          end_datetime: Time.zone.parse('2050-04-06 11:00:00')
         ) # 1 hours
 
         shift_3 = create(:shift,
           job: job,
-          start_time: Time.zone.parse('2050-04-07 13:00:00'),
-          end_time: Time.zone.parse('2050-04-07 15:00:00')
+          start_datetime: Time.zone.parse('2050-04-07 13:00:00'),
+          end_datetime: Time.zone.parse('2050-04-07 15:00:00')
         ) # 2 hours
 
         job.shifts << [ shift_1, shift_2, shift_3 ]
