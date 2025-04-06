@@ -1,3 +1,5 @@
+## UCM JOBS API
+
 # README
 
 This is a backend-only Ruby on Rails API (v8.x) designed for JSON clients. It supports JWT-based authentication and is documented via Swagger (Rswag/Open API 3).
