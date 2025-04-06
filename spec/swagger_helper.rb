@@ -19,7 +19,22 @@ RSpec.configure do |config|
       openapi: '3.0.1',
       info: {
         title: 'API V1',
-        version: 'v1'
+        version: 'v1',
+        description: <<~DESC
+        ## Welcome to the UCM Jobs API
+
+        This is a backend-only Rails API for managing jobs, users, and job_applications.
+
+        JWT authentication is required for most endpoints. Admin role for admin endpoints
+
+        Admin Users can not currently be made by the api. `Check Repo documentation for more info on admins`
+
+        You can sign up normal users via `api/v1/signup`
+
+        All Users please login via `/api/v1/login`. The return jwt token can then be used in `Authorize` or as a Bearer token.
+
+        ---
+      DESC
       },
       paths: {},
       servers: [
