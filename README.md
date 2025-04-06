@@ -17,7 +17,7 @@ This is a backend-only Ruby on Rails API (v8.x) designed for JSON clients. It su
 
 ## Ruby version
 
-- 3.2.x
+- 3.3.x
 
 ## Rails version
 
