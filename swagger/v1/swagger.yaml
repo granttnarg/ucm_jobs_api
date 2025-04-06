@@ -3,6 +3,20 @@ openapi: 3.0.1
 info:
   title: API V1
   version: v1
+  description: |
+    ## Welcome to the UCM Jobs API
+
+    This is a backend-only Rails API for managing jobs, users, and job_applications.
+
+    JWT authentication is required for most endpoints. Admin role for admin endpoints
+
+    Admin Users can not currently be made by the api. `Check Repo documentation for more info on admins`
+
+    You can sign up normal users via `api/v1/signup`
+
+    All Users please login via `/api/v1/login`. The return jwt token can then be used in `Authorize` or as a Bearer token.
+
+    ---
 paths:
   "/api/v1/admin/jobs":
     get:
@@ -330,20 +344,19 @@ components:
           type: integer
         title:
           type: string
+        total_earnings:
+          type: float
         created_at:
-          type: string
-          format: date_time
-        updated_at:
           type: string
           format: date_time
         company_id:
           type: integer
-        creator_id:
-          type: integer
       required:
         - id
         - title
-        - hourly_salary
+        - total_earnings
+        - company_id
+        - created_at
     language:
       type: object
       properties:
@@ -398,7 +411,7 @@ components:
         title:
           type: string
         total_earnings:
-          type: integer
+          type: float
         created_at:
           type: string
           format: date_time
@@ -411,7 +424,9 @@ components:
       required:
         - id
         - title
-        - hourly_salary
+        - total_earnings
+        - company_id
+        - created_at
   securitySchemes:
     bearerAuth:
       type: http
