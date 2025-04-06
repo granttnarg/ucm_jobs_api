@@ -56,9 +56,20 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
                 type: :array,
                 items: { type: :string },
                 example: [ 'en' ]
+              },
+              shifts: {
+                type: :array,
+                items: {
+                  type: :object,
+                  properties: {
+                    start_datetime: { type: :string, format: :date_time, example: '2025-04-10T09:00:00Z' },
+                    end_datetime: { type: :string, format: :date_time, example: '2025-04-10T17:00:00Z' }
+                  },
+                  required: [ :start_datetime, :end_datetime ]
+                }
               }
             },
-            required: [ :title, :hourly_salary ]
+            required: [ :title, :hourly_salary, :shifts ]
           }
         },
         required: [ :job ]
@@ -68,8 +79,24 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
         schema '$ref' => '#/components/schemas/job_response'
 
         let(:Authorization) { "Bearer #{generate_token_for(admin_user)}" }
-        let!(:shift_params) { [ { start_datetime: Time.zone.now + 10.days, end_datetime: Time.zone.now + 11.days } ] }
-        let(:job) { { job: { title: 'Software Engineer', hourly_salary: 35.50, language_codes: [ 'en' ], shifts: shift_params } } }
+        let!(:shift_params) do
+          [
+            {
+              start_datetime: (Time.zone.now + 10.days).iso8601,
+              end_datetime: (Time.zone.now + 11.days).iso8601
+            }
+          ]
+        end
+        let(:job) do
+          {
+            job: {
+              title: 'Software Engineer',
+              hourly_salary: 35.50,
+              language_codes: [ 'en' ],
+              shifts: shift_params
+            }
+          }
+        end
 
         run_test! do |response|
           parsed_response = JSON.parse(response.body)
@@ -79,7 +106,6 @@ RSpec.describe 'API V1 Admin Jobs API', type: :request do
           expect(parsed_response['shifts'].first['start_datetime']).to be_present
         end
       end
-
       response '401', 'Not authenticated' do
         let(:Authorization) { "Bearer invalid_token" }
         let(:job) { { job: { title: 'Software Engineer', hourly_salary: 35.50 } } }
