@@ -83,8 +83,6 @@ This is a backend-only Ruby on Rails API (v8.x) designed for JSON clients. It su
 10. Run Rails Server
     `bundle exec rails s`
 
-    defaults to localhost:3000/api/v1
-
 11. API Documentation
     Swagger UI is available for testing our api at:
     `/api-docs`
@@ -93,11 +91,11 @@ This is a backend-only Ruby on Rails API (v8.x) designed for JSON clients. It su
 
 12. Jwt Tokens
 
-    Login: POST /api/v1/login
+    Login: POST `/api/v1/login`
 
-    Token Refresh: POST /api/v1/refresh
+    Token Refresh: POST `/api/v1/refresh`
 
-    Tokens expire after 24 hours by default. You can configure this via: JWT_EXPIRY_DEFAULT= in your .env file
+    Tokens expire after 24 hours by default. You can configure this via: JWT_EXPIRY_DEFAULT= in your `.env` file
 
     Header Format:
     `Authorization: Bearer <token>`
@@ -109,7 +107,7 @@ This is a backend-only Ruby on Rails API (v8.x) designed for JSON clients. It su
 Heroku (MVP Stage)
 
 1. Add remote:
-   `git remote add heroku https://git.heroku.com/<REPO>.git`
+   `git remote add heroku https://git.heroku.com/<REPO_NAME>.git`
 
 2. Push to Heroku:
    `git push heroku main`
