@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Defines the root path route ("/")
-  root to: redirect('/api-docs')
+  root to: redirect("/api-docs")
 
   scope defaults: { format: :json } do
     namespace :api do
