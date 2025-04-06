@@ -102,18 +102,7 @@ Currently, the application is not dockerized, but here are the general steps for
 
 3. **Deployment with Docker (future plan):**
 
-   - The application is currently not containerized. The plan is to create a Dockerfile and use Docker Compose to deploy the app.
-   - A potential Dockerfile might look like:
-
-     ```dockerfile
-     FROM ruby:3.2.0
-     WORKDIR /app
-     COPY Gemfile Gemfile.lock ./
-     RUN bundle install
-
-     COPY . ./
-     CMD ["rails", "server", "-b", "0.0.0.0"]
-     ```
+   - Rails 8 now comes with a basic docker setup. This has not be tweaked or configured for deployment and would need to be done as a follow up task.
 
 4. **CI/CD (future plan):**
 
