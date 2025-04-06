@@ -37,16 +37,21 @@ This is a backend-only Ruby on Rails API (v8.x) designed for JSON clients. It su
    `bundle install`
 
 3. ENV file
-   `cp .env.example .env`
+   `cp env.example .env`
    env.example can be set to .env. You will find the standard keys required in there.
    Set your RAILS_MASTER_KEY using the contents of config/master.key. This is required to decrypt Rails credentials.
 
 4. Rails credentials
-   `bin/rails credentials:edit`
+   `EDITOR="code --wait" bin/rails credentials:edit`
    You can store secrets like JWT_SECRET here. If not set, the app will fall back to the Rails.application.secret_key_base.
 
    Generate a secure base64 secret with for your JWT_SECRET:
    `openssl rand -base64 64`
+
+   ```
+   developement:
+         jwt_secret: <your-base64-code>
+   ```
 
 5. Database Creation
    `rails db:create`
@@ -67,17 +72,23 @@ This is a backend-only Ruby on Rails API (v8.x) designed for JSON clients. It su
    `bundle exec rspec`
 
 9. Swagger file generation - optional
+   ⚠️ Note: This command can overwrite the bearerAuth key in swagger_helper.rb, causing issues with JWT auth in /api-docs. A workaround is documented in the helper file.
+
    `rails rswag:specs:swaggerize`
    This will recreate swagger.yaml for documentation. This is only required if you make changes to the Rswag specs or configuration.
 
-   ⚠️ Note: This command can overwrite the bearerAuth key in swagger_helper.rb, causing issues with JWT auth in /api-docs. A workaround is documented in the helper file.
+10. Run Rails Server
+    `bundle exec rails s`
 
-10. API Documentation
+    defaults to localhost:3000/api/v1
+
+11. API Documentation
     Swagger UI is available for testing our api at:
     `/api-docs`
+
     Uses RSwag for request specs and documentation generation.
 
-11. Jwt Tokens
+12. Jwt Tokens
 
     Login: POST /api/v1/login
 
