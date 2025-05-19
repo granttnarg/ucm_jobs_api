@@ -61,4 +61,4 @@ group :development, :test do
 end
 
 gem "rubocop", "~> 1.75"
-gem "rubocop-rails", "~> 2.31"
+gem "rubocop-rails", "~> 2.32"
