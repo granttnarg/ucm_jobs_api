@@ -1,4 +1,6 @@
 ## UCM JOBS API
+A comprehensive Rails API demonstrating modern web development practices and my thoughts on AI to future improvements.
+Built as part of exploring full-stack development opportunities.
 
 # README
 
