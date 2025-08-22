@@ -60,5 +60,5 @@ group :development, :test do
   gem "bullet"
 end
 
-gem "rubocop", "~> 1.75"
+gem "rubocop", "~> 1.80"
 gem "rubocop-rails", "~> 2.31"
